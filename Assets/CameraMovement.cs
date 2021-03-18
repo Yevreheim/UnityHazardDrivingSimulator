@@ -19,31 +19,27 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //transform.eulerAngles = new Vector3(0,0,Input.GetAxis("Horizontal")*360);
+        //Wheel
+        transform.Translate(new Vector3(Input.GetAxis("Horizontal"),0,0));
+        
         if ((Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.D)))
         {
             transform.Translate(new Vector3(5 * Time.deltaTime, 0, 0));
-            //transform.Rotate(Vector3.up * speed * Time.deltaTime);
         }
         if ((Input.GetKey(KeyCode.LeftArrow)) || (Input.GetKey(KeyCode.A)))
         {
             transform.Translate(new Vector3(-5 * Time.deltaTime, 0, 0));
-            //transform.Rotate(-Vector3.up * speed * Time.deltaTime);
         }
         if ((Input.GetKey(KeyCode.DownArrow)) || (Input.GetKey(KeyCode.S)))
         {
-            //transform.Translate(new Vector3(0, -3 * Time.deltaTime, 0));
-            //transform.Translate(new Vector3(0, 0, -3 * Time.deltaTime));
-            //transform.Rotate(Vector3.right * speed * Time.deltaTime);
             if (speedEnhancer > 3){
                 speedEnhancer = speedEnhancer - 0.1f;
             }
         }
         if ((Input.GetKey(KeyCode.UpArrow)) || (Input.GetKey(KeyCode.W)))
         {
-            //transform.Translate(new Vector3(0, 3 * Time.deltaTime, 0));
             speedEnhancer = speedEnhancer + 0.1f;
-            //transform.Translate(new Vector3(0, 0, 3 * Time.deltaTime));
-            //transform.Rotate(-Vector3.right * speed * Time.deltaTime);
         }
         if ((Input.GetKey(KeyCode.Space)))
         {
@@ -70,5 +66,6 @@ public class CameraMovement : MonoBehaviour
                 transform.Translate(new Vector3(0, 0, speedEnhancer * Time.deltaTime));
                 break;
         }
+        
     }
 }

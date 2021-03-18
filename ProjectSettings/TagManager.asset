@@ -5,6 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - Car
+  - Lane1
+  - Lane2
+  - Lane3
+  - Lane4
+  - UIText
+  - ListText
+  - GlobalClock
+  - AudioDist
   layers:
   - Default
   - TransparentFX
