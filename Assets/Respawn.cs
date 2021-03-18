@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using UnityEngine.TextCore;
 using System;
 using System.Threading;
 using System.Linq;
@@ -8,33 +11,31 @@ using System.Linq;
 public class Respawn : MonoBehaviour
 {
     //Variables
-    private float x = 0;
-    private float y = 0;
-    private float z = 0;
-    private float initialX;
-    private float initialY;
-    private float initialZ;
+    private static float x = 0;
+    private static float y = 0;
+    private static float z = 0;
+    private static float initialX;
+    private static float initialY;
+    private static float initialZ;
     int[] Show = new int[2];
     public static GameObject[] CellArray;
     private List<GameObject> Car = new List<GameObject>();
     private System.Random Rand = new System.Random();
     int CountTwo = 0;
-    private GameObject[] CarArray = new GameObject[4];
+    private static GameObject[] CarArray = new GameObject[4];
     private GameObject TestObject;
     private static Respawn Instance;
     private int Phase = 0;
     //LaneDeviationSpeed
     private float LaneDeviationSpeed;
-    private int RespawningCarDeviation;
-    private int LeftRightCarMove = 0;
+    public static int RespawningCarDeviation;
+    public static int LeftRightCarMove = 0;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        initialX = transform.position.x;
-        initialY = transform.position.y;
-        initialZ = transform.position.z;
+
 
         Show = ArrayRandomiser();
         CellArray = CellCount(CellArray);
@@ -61,6 +62,7 @@ public class Respawn : MonoBehaviour
         x = GameObject.FindWithTag("MainCamera").transform.position.x;
         y = GameObject.FindWithTag("MainCamera").transform.position.y;
         z = GameObject.FindWithTag("MainCamera").transform.position.z;
+         
 
         if (Input.GetKey(KeyCode.X)){
             Debug.Log(Timer.TimerClock.ToString());
@@ -93,10 +95,9 @@ public class Respawn : MonoBehaviour
                 //Reset Time somewhere
                 Timer.TimerClock = 0.0f;
                 //List of tasks generated
-                int RandomSelection = UnityEngine.Random.Range(0,4);
-                TaskSelection(RandomSelection);
-                //Cars spawning + Press Button
-                
+                int RandomSelection = UnityEngine.Random.Range(0,1);
+                TaskHandler.TaskProcessor();
+                //TaskSelection(RandomSelection);
             }
             //Reset Section
             else {
@@ -191,7 +192,7 @@ public class Respawn : MonoBehaviour
     }
 
     //Respawn Algorithm
-    private void RandomAllocation(int Check)
+    public static void RandomAllocation(int Check)
     {
         var randomInt = UnityEngine.Random.Range(0,2);
         int[] PathRandom = new int[]{0,0,0,0};
@@ -214,7 +215,7 @@ public class Respawn : MonoBehaviour
             if (Check == 1){
                 if (count != 2 || PathRandom[1] != 1) {
                 count = 0;
-                Rand = new System.Random();
+                // Rand = new System.Random();
                     for (int j = 0; j < PathRandom.Length; j++){
                         if (randomInt == 0){
                             PathRandom[j] = 0;
@@ -233,7 +234,7 @@ public class Respawn : MonoBehaviour
             else if (Check == 0 || Check == 2){
                 if (count != 2 || PathRandom[1] != 0 || PathRandom[Check] != 1) {
                 count = 0;
-                Rand = new System.Random();
+                // Rand = new System.Random();
                     for (int j = 0; j < PathRandom.Length; j++){
                         if (randomInt == 0){
                             PathRandom[j] = 0;
@@ -255,22 +256,15 @@ public class Respawn : MonoBehaviour
         {
             //Could have the functiom below return a value when True is done
             //For loop to check an array
+            
             TaskCountHolder[i] = DistractionActive(PathRandom, HolderFloat, i);
             CarArray[i].transform.position = new Vector3(i*6f,0,(transform.position.z));
         }
 
-        //Adds into Task count
-        // if (Check == 1){
-        //     PlayerController.TaskList.Add("Visual Distraction - Car");
-        // }
-        // else if (Check == 0 || Check == 2){
-        //     PlayerController.TaskList.Add("Lane Distraction - Car Moving");
-        // }
-
     }
     
     //Rendering
-    private int DistractionActive(int[] PathRandom, float HolderFloat, int i)
+    private static int DistractionActive(int[] PathRandom, float HolderFloat, int i)
     {  
         if (PathRandom[i] == 1)
         {

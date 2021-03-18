@@ -38,7 +38,7 @@ public class TaskHandler : MonoBehaviour {
 
 
     public static void TaskProcessor(){
-        int RandomSelection = UnityEngine.Random.Range(0,12);
+        int RandomSelection = UnityEngine.Random.Range(0,4);
         TaskVisualCarDistraction = TaskArray[0];
         TaskLaneDeviation = TaskArray[1];
         TaskAuditoryDistraction = TaskArray[2];
@@ -62,7 +62,7 @@ public class TaskHandler : MonoBehaviour {
                     break;
                 }
                 else {
-                    RandomSelection = UnityEngine.Random.Range(0,12);
+                    RandomSelection = UnityEngine.Random.Range(0,4);
                     break;
                 }
             }
@@ -74,50 +74,63 @@ public class TaskHandler : MonoBehaviour {
         //Visual Car Distraction
         if (RandomSelection == 0){
             PlayerController.TaskList.Add("Visual");
+            Respawn.RandomAllocation(1);
         }
         //Lane Deviation
         else if (RandomSelection == 1){
             PlayerController.TaskList.Add("LD");
+            TaskDeviation.Signal = 1;
         }
         //Sound and Select -- Auditory Distraction
         else if (RandomSelection == 2){
             PlayerController.TaskList.Add("Auditory");
+            AuditoryDistraction.Signal = 1;
         }
         //Emergency Braking
         else if (RandomSelection == 3){
             PlayerController.TaskList.Add("EB");
+            int QuickRandom = UnityEngine.Random.Range(0,2);
+            if (QuickRandom == 0){
+                Respawn.LeftRightCarMove = 0;
+            }
+            else if (QuickRandom == 1){
+                Respawn.LeftRightCarMove = 2;
+            }
+            Respawn.RandomAllocation(Respawn.LeftRightCarMove);
+            Respawn.RespawningCarDeviation = 0;
+
         }
         //Lane Deviation -> Auditory
         else if (RandomSelection == 4){
-
+            PlayerController.TaskList.Add("LD/A");
         }
         //Auditory -> Lane Deviation
         else if (RandomSelection == 5){
-
+            PlayerController.TaskList.Add("A/LD");
         }
         //Lane Deviation -> Visual
         else if (RandomSelection == 6){
-
+            PlayerController.TaskList.Add("LD/V");
         }
         //Visual -> Lane Deviation
         else if (RandomSelection == 7){
-
+            PlayerController.TaskList.Add("V/LD");
         }
         //Emergency Braking -> Auditory
         else if (RandomSelection == 8){
-
+            PlayerController.TaskList.Add("EB/A");
         }
         //Auditory -> Emergency Braking
         else if (RandomSelection == 9){
-
+            PlayerController.TaskList.Add("A/EB");
         }
         //Emergency Braking -> Visual
         else if (RandomSelection == 10){
-
+            PlayerController.TaskList.Add("EB/V");
         }
         //Visual -> Emergency Braking
         else if (RandomSelection == 11){
-
+            PlayerController.TaskList.Add("V/EB");
         }
     }
 }
