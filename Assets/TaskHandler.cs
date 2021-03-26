@@ -37,7 +37,10 @@ public class TaskHandler : MonoBehaviour {
     }
 
 
-    public static void TaskProcessor(){
+    public static void TaskProcessor(int PlaneNumber){
+        //This thing throw back out into RH
+        RespawningHierarchy.RespawningCarDeviation = 0;
+        //Main
         int RandomSelection = UnityEngine.Random.Range(0,4);
         TaskVisualCarDistraction = TaskArray[0];
         TaskLaneDeviation = TaskArray[1];
@@ -52,29 +55,31 @@ public class TaskHandler : MonoBehaviour {
         TaskEBV[0] = TaskArray[10];
         TaskEBV[1] = TaskArray[11];
         //Exception Handler
-        while (true) {
-            int Lock = 0;
-            for(int i = 0; i < TaskArray.Length; i++){
-                if (RandomSelection == i && TaskArray[i] <= 9){
-                    //Task Approved
-                    TaskArray[i] += 1;
-                    Lock = 1;
-                    break;
-                }
-                else {
-                    RandomSelection = UnityEngine.Random.Range(0,4);
-                    break;
-                }
-            }
-            if (Lock == 1){
-                break;
-            }
-            
-        }
+        // while (true) {
+        //     int Lock = 0;
+        //     for(int i = 0; i < TaskArray.Length; i++){
+        //         if (RandomSelection == i && TaskArray[i] <= 9){
+        //             //Task Approved
+        //             TaskArray[i] += 1;
+        //             Lock = 1;
+        //             break;
+        //         }
+        //         else {
+        //             RandomSelection = UnityEngine.Random.Range(0,4);
+        //             break;
+        //         }
+        //     }
+        //     if (Lock == 1){
+        //         break;
+        //     }
+        // }
         //Visual Car Distraction
         if (RandomSelection == 0){
             PlayerController.TaskList.Add("Visual");
-            Respawn.RandomAllocation(1);
+            Debug.Log("Visual Distraction - Car Appreance");
+            //Respawn.RandomAllocation(1, PlanePosition);
+            RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(1),PlaneNumber);
+            
         }
         //Lane Deviation
         else if (RandomSelection == 1){
@@ -91,14 +96,14 @@ public class TaskHandler : MonoBehaviour {
             PlayerController.TaskList.Add("EB");
             int QuickRandom = UnityEngine.Random.Range(0,2);
             if (QuickRandom == 0){
-                Respawn.LeftRightCarMove = 0;
+                RespawningHierarchy.CarMovement = 0;
             }
             else if (QuickRandom == 1){
-                Respawn.LeftRightCarMove = 2;
+                RespawningHierarchy.CarMovement = 2;
             }
-            Respawn.RandomAllocation(Respawn.LeftRightCarMove);
-            Respawn.RespawningCarDeviation = 0;
-
+            RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(RespawningHierarchy.CarMovement),PlaneNumber);
+            RespawningHierarchy.RespawningCarDeviation = 1;
+            RespawningHierarchy.CarMovementPlaneReference = PlaneNumber;
         }
         //Lane Deviation -> Auditory
         else if (RandomSelection == 4){

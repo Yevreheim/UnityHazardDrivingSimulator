@@ -59,6 +59,7 @@
      <Compile Include="Assets\CameraMovement.cs" />
      <Compile Include="Assets\PlayerController.cs" />
      <Compile Include="Assets\Respawn.cs" />
+     <Compile Include="Assets\RespawningHierarchy.cs" />
      <Compile Include="Assets\SecondaryCameraFollow.cs" />
      <Compile Include="Assets\TaskDeviation.cs" />
      <Compile Include="Assets\TaskHandler.cs" />

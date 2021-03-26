@@ -25,19 +25,16 @@ public class Respawn : MonoBehaviour
     private static GameObject[] CarArray = new GameObject[4];
     private GameObject TestObject;
     private static Respawn Instance;
-    private int Phase = 0;
     //LaneDeviationSpeed
     private float LaneDeviationSpeed;
     public static int RespawningCarDeviation;
     public static int LeftRightCarMove = 0;
+    private static int TaskActiveHolder = 1;
     
 
     // Start is called before the first frame update
     void Start()
     {
-
-
-        Show = ArrayRandomiser();
         CellArray = CellCount(CellArray);
         foreach (GameObject G in CellArray){
             if (G.tag == "Car"){
@@ -47,10 +44,10 @@ public class Respawn : MonoBehaviour
             }
         }
         //RandomAllocation();
-        Phase = 2;
         TestObject = GameObject.FindWithTag("MainCamera");
         RespawningCarDeviation = 0;
     }
+    
     void Awake(){
         Instance = this;
     }
@@ -69,7 +66,8 @@ public class Respawn : MonoBehaviour
             Thread.Sleep(100);
         }
         if (Input.GetKey(KeyCode.H)){
-            CarDeviation();
+            //CarDeviation();
+            TaskActiveHolder = 0;
         }
         //Car Deviation Distraction
         if (RespawningCarDeviation == 1){
@@ -89,94 +87,27 @@ public class Respawn : MonoBehaviour
         //Respawning Process
         if (z > transform.position.z + 5)
         {
-            //Randomisation between tasks occur here
+            // Modify by 10 for each plane
+            transform.position = new Vector3(0,0,(transform.position.z + 40));
             //Changing this timer variable can taken in via cases
             if (LaneTimer > 8){
-                //Reset Time somewhere
-                Timer.TimerClock = 0.0f;
                 //List of tasks generated
                 int RandomSelection = UnityEngine.Random.Range(0,1);
-                TaskHandler.TaskProcessor();
+                TaskHandler.TaskProcessor(1);
+                // TaskActiveHolder = 1;
+                Timer.TimerClock = 0.0f;
                 //TaskSelection(RandomSelection);
             }
             //Reset Section
-            else {
+            else if (TaskActiveHolder == 0){
                 foreach(GameObject G in CarArray){
                     if (G.tag == "Car"){
                         G.SetActive(false);
                     }
                 }
             }
-            //This part doesn't need to know about anything else
-            // Modify by 10 for each plane
-            transform.position = new Vector3(0,0,(transform.position.z + 30));
-            Show = ArrayRandomiser();
             Debug.Log("New Position: " + transform.position.z);
         }
-    }
-
-    private void TaskSelection(int RandomSelection){
-                //See a car infront
-                if (RandomSelection == 0){
-                    //PlayerController.TaskList.Add("Visual Distraction - Car");
-                    RandomAllocation(1);
-                }
-                //Lane Deviation
-                else if (RandomSelection == 1){
-                    PlayerController.TaskList.Add("Visual Distraction - Lane");
-                    TaskDeviation.Signal = 1;
-                }
-                //Sound and Select -- Auditory Distraction
-                else if (RandomSelection == 2){
-                    PlayerController.TaskList.Add("Visual Distraction - Sound");
-                    AuditoryDistraction.Signal = 1;
-                }
-                //Emergency Braking
-                else if (RandomSelection == 3){
-                    PlayerController.TaskList.Add("Lane Distraction - Car Moving");
-                    int QuickRandom = UnityEngine.Random.Range(0,2);
-                    if (QuickRandom == 0){
-                        LeftRightCarMove = 0;
-                    }
-                    else if (QuickRandom == 1){
-                        LeftRightCarMove = 2;
-                    }
-                    RandomAllocation(LeftRightCarMove);
-                    //Triggers Deviation
-                    RespawningCarDeviation = 1;
-                }
-                //Lane Deviation -> Auditory
-                else if (RandomSelection == 4){
-
-                }
-                //Auditory -> Lane Deviation
-                else if (RandomSelection == 5){
-
-                }
-                //Lane Deviation -> Visual
-                else if (RandomSelection == 6){
-
-                }
-                //Visual -> Lane Deviation
-                else if (RandomSelection == 7){
-
-                }
-                //Emergency Braking -> Auditory
-                else if (RandomSelection == 8){
-
-                }
-                //Auditory -> Emergency Braking
-                else if (RandomSelection == 9){
-
-                }
-                //Emergency Braking -> Visual
-                else if (RandomSelection == 10){
-
-                }
-                //Visual -> Emergency Braking
-                else if (RandomSelection == 11){
-
-                }
     }
     private void CarDeviation(){
         int NegPos = UnityEngine.Random.Range(0,2);
@@ -192,7 +123,7 @@ public class Respawn : MonoBehaviour
     }
 
     //Respawn Algorithm
-    public static void RandomAllocation(int Check)
+    public static void RandomAllocation(int Check, float PlanePosition)
     {
         var randomInt = UnityEngine.Random.Range(0,2);
         int[] PathRandom = new int[]{0,0,0,0};
@@ -256,27 +187,16 @@ public class Respawn : MonoBehaviour
         {
             //Could have the functiom below return a value when True is done
             //For loop to check an array
-            
-            TaskCountHolder[i] = DistractionActive(PathRandom, HolderFloat, i);
-            CarArray[i].transform.position = new Vector3(i*6f,0,(transform.position.z));
+            if (PathRandom[i] == 1){
+                CarArray[i].SetActive(true);
+            }
+            else if (PathRandom[i] == 0){
+                CarArray[i].SetActive(false);
+            }
+            //CarArray[i].transform.position = new Vector3(i*6f,0,(PlanePosition));
         }
-
     }
     
-    //Rendering
-    private static int DistractionActive(int[] PathRandom, float HolderFloat, int i)
-    {  
-        if (PathRandom[i] == 1)
-        {
-            CarArray[i].SetActive(true);
-            return 1;
-        }
-        else
-        {
-            CarArray[i].SetActive(false);
-            return 0;
-        }
-    }
 
     private GameObject[] CellCount(GameObject[] G){
         G = new GameObject[transform.childCount];
@@ -286,23 +206,4 @@ public class Respawn : MonoBehaviour
         }
         return G;
     }
-
-    private static int[] ArrayRandomiser()
-    {
-        int[] Test = new int[2];
-        System.Random Rd1 = new System.Random();
-        System.Random Rd2 = new System.Random();
-        int RandomNumber1 = Rd1.Next(0, 5);
-        int RandomNumber2 = Rd2.Next(0, 5);
-        Test[0] = RandomNumber1;
-        while (RandomNumber1 == RandomNumber2)
-        {
-            RandomNumber2 = Rd2.Next(1, 5);
-        }
-        Test[1] = RandomNumber2;
-        return Test;
-    }
-
-
-
 }

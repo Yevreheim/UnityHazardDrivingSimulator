@@ -31,23 +31,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.L)){
             ListTextHolder.GetComponent<Text>().text = "";
         }
-        if (Input.GetKey(KeyCode.JoystickButton0)){
-            Debug.Log("A");
-            Thread.Sleep(100);
-        }
-        if (Input.GetKey(KeyCode.JoystickButton1)){
-            Debug.Log("B");
-            Thread.Sleep(100);
-        }
-        if (Input.GetKey(KeyCode.JoystickButton2)){
-            Debug.Log("X");
-            Thread.Sleep(100);
-        }
-        if (Input.GetKey(KeyCode.JoystickButton3)){
-            Debug.Log("Y");
-            Thread.Sleep(100);
-        }
-
     }
 
     public void ListDisplayUpdate(){

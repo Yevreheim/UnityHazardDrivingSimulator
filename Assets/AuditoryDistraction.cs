@@ -25,16 +25,17 @@ public class AuditoryDistraction : MonoBehaviour
             G.GetComponent<Text>().text ="";
             G.SetActive(false);
         }
-        ADTextObjects[0].GetComponent<Text>().text = "Fish";
-        ADTextObjects[1].GetComponent<Text>().text = "Dog";
-        ADTextObjects[2].GetComponent<Text>().text = "Cat";
-        ADTextObjects[3].GetComponent<Text>().text = "Chicken";
+        ADTextObjects[0].GetComponent<Text>().text = "Fish (A)";
+        ADTextObjects[1].GetComponent<Text>().text = "Dog (B)";
+        ADTextObjects[2].GetComponent<Text>().text = "Cat (X)";
+        ADTextObjects[3].GetComponent<Text>().text = "Chicken (Y)";
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Spawning
         if (Signal == 1){
             if (FlipFlop == 0){
                 RandomAnimal = UnityEngine.Random.Range(0,4);
@@ -49,6 +50,27 @@ public class AuditoryDistraction : MonoBehaviour
         }
         else if (Signal == 0){
             FlipFlop = 0;
+        }
+        //Response
+        if (Input.GetKey(KeyCode.JoystickButton0) && ADTextObjects[0].activeSelf == true){
+            Debug.Log("A Pressed");
+            ADTextObjects[0].SetActive(false);
+            Thread.Sleep(100);
+        }
+        if (Input.GetKey(KeyCode.JoystickButton1) && ADTextObjects[1].activeSelf == true){
+            Debug.Log("B Pressed");
+            ADTextObjects[1].SetActive(false);
+            Thread.Sleep(100);
+        }
+        if (Input.GetKey(KeyCode.JoystickButton2) && ADTextObjects[2].activeSelf == true){
+            Debug.Log("X Pressed");
+            ADTextObjects[2].SetActive(false);
+            Thread.Sleep(100);
+        }
+        if (Input.GetKey(KeyCode.JoystickButton3) && ADTextObjects[3].activeSelf == true){
+            Debug.Log("Y Pressed");
+            ADTextObjects[3].SetActive(false);
+            Thread.Sleep(100);
         }
     }
 }
