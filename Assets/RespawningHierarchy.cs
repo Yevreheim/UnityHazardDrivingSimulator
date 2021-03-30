@@ -162,7 +162,6 @@ public class RespawningHierarchy : MonoBehaviour
                     break;
                 }
             }
-            
         }
         return PathRandom;
     }

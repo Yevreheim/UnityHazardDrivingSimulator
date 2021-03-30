@@ -47,6 +47,7 @@ public class AuditoryDistraction : MonoBehaviour
                     ADTextObjects[i].SetActive(true);
                 }
             }
+            Signal = 0;
         }
         else if (Signal == 0){
             FlipFlop = 0;
