@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 using System.Threading;
 using System.Linq;
+using System.IO;
+using System.Text;
 
 
 public class TaskHandler : MonoBehaviour {
@@ -11,7 +13,7 @@ public class TaskHandler : MonoBehaviour {
     private static float TaskTimerController;
     private static float SecondTaskTimer;
     private static float SecondTaskReference;
-    private static float PlaneHolder;
+    private static int PlaneHolder;
 
     //Array to count both variations
     public static int TaskLaneDeviation = 0;
@@ -24,12 +26,37 @@ public class TaskHandler : MonoBehaviour {
     public static int[] TaskEBV = new int[]{0,0};
     private static int TaskCount = 9;
     private static int[] TaskArray = new int[]{0,0,0,0,0,0,0,0,0,0,0,0};
+    private static string[] taskNames = new string[]{"Visual","LD","Auditory","EB","LD/A","A/LD","LD/V","V/LD","EB/A","A/EB","EB/V","V/EB"};
+
+    //File Handling
+    public static string pathText;
+    public static string pathExcel;
+    public static string fileTextName;
+    public static string fileExcelName;
+    public static string directoryDesktop =  Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
+    public static StreamWriter textSW;
+    public static StreamWriter excelSW;
+    
 
     void Start()    
     {
         GlobalTimer = 0;
         SecondTaskTimer = 0;
         SecondTaskReference = 0;
+        fileTextName = "/ObservationLog_" + System.DateTime.Now.ToString("MM-dd-yy_hh-mm-ss") + ".txt";
+        fileExcelName = "/ObservationLog_" + System.DateTime.Now.ToString("MM-dd-yy_hh-mm-ss") + ".csv";
+        pathExcel = Application.persistentDataPath + fileExcelName;
+        pathText = Application.persistentDataPath + fileTextName;
+        System.IO.File.WriteAllText(pathText,"Test");
+        textSW = new StreamWriter(pathText);
+        excelSW = new StreamWriter(pathExcel);
+        var line = String.Format("{0},{1},{2}","Activity: ","Time: ","Session Time");
+        excelSW.WriteLine(line);
+        //EventWriter("Carrot");
+        // SW.WriteLine("Carrot");
+        // SW.WriteLine("Purple");
+        //Implement Stream Writer
+        Debug.Log(Application.persistentDataPath);
 
     }
 
@@ -73,41 +100,50 @@ public class TaskHandler : MonoBehaviour {
                     else if (QuickRandom == 1){
                         RespawningHierarchy.CarMovement = 2;
                     }
-                    RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(RespawningHierarchy.CarMovement),PlaneNumber);
+                    RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(RespawningHierarchy.CarMovement),PlaneHolder);
                     RespawningHierarchy.RespawningCarDeviation = 1;
-                    RespawningHierarchy.CarMovementPlaneReference = PlaneNumber;
+                    RespawningHierarchy.CarMovementPlaneReference = PlaneHolder;
                 }
                 SecondTaskReference = 0;
             }
         }
     }
-
+    public static void EventWriter(string Activity,string timeDuration, string timeGlobal){
+        //Excel
+            excelSW.WriteLine("{0},{1},{2}",Activity,timeDuration,timeGlobal);
+            //excelSW.Close();
+    }
 
     public static void TaskProcessor(int PlaneNumber){
         //This thing throw back out into RH
         RespawningHierarchy.RespawningCarDeviation = 0;
         //Main
-        int RandomSelection = UnityEngine.Random.Range(0,4);
+        int RandomSelection = UnityEngine.Random.Range(0,12);
+        //Filtering
+
+        //Event Handler
         TaskArray[RandomSelection]++;
+        PlayerController.TaskList.Add(taskNames[RandomSelection]);
+        EventWriter(taskNames[RandomSelection],Timer.TimerClock.ToString(),Timer.GlobalClock.ToString());
         //Visual Car Distraction
         if (RandomSelection == 0){
-            PlayerController.TaskList.Add("Visual");
+            Debug.Log("Visual");
             //Respawn.RandomAllocation(1, PlanePosition);
             RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(1),PlaneNumber);
         }
         //Lane Deviation
         else if (RandomSelection == 1){
-            PlayerController.TaskList.Add("LD");
+            Debug.Log("LD");
             TaskDeviation.Signal = 1;
         }
         //Sound and Select -- Auditory Distraction
         else if (RandomSelection == 2){
-            PlayerController.TaskList.Add("Auditory");
+            Debug.Log("Auditory");
             AuditoryDistraction.Signal = 1;
         }
         //Emergency Braking
         else if (RandomSelection == 3){
-            PlayerController.TaskList.Add("EB");
+            Debug.Log("EB");
             int QuickRandom = UnityEngine.Random.Range(0,2);
             if (QuickRandom == 0){
                 RespawningHierarchy.CarMovement = 0;
@@ -121,49 +157,75 @@ public class TaskHandler : MonoBehaviour {
         }
         //Lane Deviation -> Auditory
         else if (RandomSelection == 4){
-            PlayerController.TaskList.Add("LD/A");
+            Debug.Log("LD/A");
+            TaskDeviation.Signal = 1;
             PlaneHolder = PlaneNumber;
             SecondTaskReference = 3;
         }
         //Auditory -> Lane Deviation
         else if (RandomSelection == 5){
-            PlayerController.TaskList.Add("A/LD");
+            Debug.Log("A/LD");
+            AuditoryDistraction.Signal = 1;
             PlaneHolder = PlaneNumber;
             SecondTaskReference = 2;
         }
         //Lane Deviation -> Visual
         else if (RandomSelection == 6){
-            PlayerController.TaskList.Add("LD/V");
+            Debug.Log("LD/V");
+            TaskDeviation.Signal = 1;
             PlaneHolder = PlaneNumber;
             SecondTaskReference = 1;
         }
         //Visual -> Lane Deviation
         else if (RandomSelection == 7){
-            PlayerController.TaskList.Add("V/LD");
+            Debug.Log("V/LD");
+            RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(1),PlaneNumber);
             PlaneHolder = PlaneNumber;
             SecondTaskReference = 2;
         }
         //Emergency Braking -> Auditory
         else if (RandomSelection == 8){
-            PlayerController.TaskList.Add("EB/A");
+            Debug.Log("EB/A");
+            int QuickRandom = UnityEngine.Random.Range(0,2);
+            if (QuickRandom == 0){
+                RespawningHierarchy.CarMovement = 0;
+            }
+            else if (QuickRandom == 1){
+                RespawningHierarchy.CarMovement = 2;
+            }
+            RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(RespawningHierarchy.CarMovement),PlaneNumber);
+            RespawningHierarchy.RespawningCarDeviation = 1;
+            RespawningHierarchy.CarMovementPlaneReference = PlaneNumber;
             PlaneHolder = PlaneNumber;
             SecondTaskReference = 3;
         }
         //Auditory -> Emergency Braking
         else if (RandomSelection == 9){
-            PlayerController.TaskList.Add("A/EB");
+            Debug.Log("A/EB");
+            AuditoryDistraction.Signal = 1;
             PlaneHolder = PlaneNumber;
             SecondTaskReference = 4;
         }
         //Emergency Braking -> Visual
         else if (RandomSelection == 10){
-            PlayerController.TaskList.Add("EB/V");
+            Debug.Log("EB/V");
+            int QuickRandom = UnityEngine.Random.Range(0,2);
+            if (QuickRandom == 0){
+                RespawningHierarchy.CarMovement = 0;
+            }
+            else if (QuickRandom == 1){
+                RespawningHierarchy.CarMovement = 2;
+            }
+            RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(RespawningHierarchy.CarMovement),PlaneNumber);
+            RespawningHierarchy.RespawningCarDeviation = 1;
+            RespawningHierarchy.CarMovementPlaneReference = PlaneNumber;
             PlaneHolder = PlaneNumber;
             SecondTaskReference = 1;
         }
         //Visual -> Emergency Braking
         else if (RandomSelection == 11){
-            PlayerController.TaskList.Add("V/EB");
+            Debug.Log("V/EB");
+            RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(1),PlaneNumber);
             PlaneHolder = PlaneNumber;
             SecondTaskReference = 4;
         }

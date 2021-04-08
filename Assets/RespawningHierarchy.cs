@@ -32,6 +32,7 @@ public class RespawningHierarchy : MonoBehaviour
         }
 
     }
+    
     void Update(){
         //Global Variable Updates
         float LaneTimer = Timer.TimerClock;
