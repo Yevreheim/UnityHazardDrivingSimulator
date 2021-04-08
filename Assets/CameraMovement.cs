@@ -21,7 +21,7 @@ public class CameraMovement : MonoBehaviour
     {
         //transform.eulerAngles = new Vector3(0,0,Input.GetAxis("Horizontal")*360);
         //Wheel
-        //transform.Translate(new Vector3(Input.GetAxis("Horizontal"),0,0));
+        transform.Translate(new Vector3(Input.GetAxis("Horizontal"),0,0));
         
         if ((Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.D)))
         {
