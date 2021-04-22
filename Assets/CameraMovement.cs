@@ -21,15 +21,20 @@ public class CameraMovement : MonoBehaviour
     {
         //transform.eulerAngles = new Vector3(0,0,Input.GetAxis("Horizontal")*360);
         //Wheel
-        transform.Translate(new Vector3(Input.GetAxis("Horizontal"),0,0));
         
         if ((Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.D)))
         {
-            transform.Translate(new Vector3(5 * Time.deltaTime, 0, 0));
+            if (transform.position.x < 21.5){
+                transform.Translate(new Vector3(Input.GetAxis("Horizontal"),0,0));
+                transform.Translate(new Vector3(5 * Time.deltaTime, 0, 0));
+            }
         }
         if ((Input.GetKey(KeyCode.LeftArrow)) || (Input.GetKey(KeyCode.A)))
         {
-            transform.Translate(new Vector3(-5 * Time.deltaTime, 0, 0));
+            if (transform.position.x > -3.5){
+                transform.Translate(new Vector3(Input.GetAxis("Horizontal"),0,0));
+                transform.Translate(new Vector3(-5 * Time.deltaTime, 0, 0));
+            }
         }
         if ((Input.GetKey(KeyCode.DownArrow)) || (Input.GetKey(KeyCode.S)))
         {

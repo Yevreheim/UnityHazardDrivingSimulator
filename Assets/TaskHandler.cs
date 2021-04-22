@@ -24,7 +24,6 @@ public class TaskHandler : MonoBehaviour {
     public static int[] TaskLDV = new int[]{0,0};
     public static int[] TaskEBA = new int[]{0,0};
     public static int[] TaskEBV = new int[]{0,0};
-    private static int TaskCount = 9;
     private static int[] TaskArray = new int[]{0,0,0,0,0,0,0,0,0,0,0,0};
     private static string[] taskNames = new string[]{"Visual","LD","Auditory","EB","LD/A","A/LD","LD/V","V/LD","EB/A","A/EB","EB/V","V/EB"};
 
@@ -34,8 +33,8 @@ public class TaskHandler : MonoBehaviour {
     public static string fileTextName;
     public static string fileExcelName;
     public static string directoryDesktop =  Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
-    public static StreamWriter textSW;
     public static StreamWriter excelSW;
+    public static StreamReader excelSR;
     
 
     void Start()    
@@ -43,19 +42,14 @@ public class TaskHandler : MonoBehaviour {
         GlobalTimer = 0;
         SecondTaskTimer = 0;
         SecondTaskReference = 0;
-        fileTextName = "/ObservationLog_" + System.DateTime.Now.ToString("MM-dd-yy_hh-mm-ss") + ".txt";
         fileExcelName = "/ObservationLog_" + System.DateTime.Now.ToString("MM-dd-yy_hh-mm-ss") + ".csv";
         pathExcel = Application.persistentDataPath + fileExcelName;
-        pathText = Application.persistentDataPath + fileTextName;
-        System.IO.File.WriteAllText(pathText,"Test");
-        textSW = new StreamWriter(pathText);
         excelSW = new StreamWriter(pathExcel);
-        var line = String.Format("{0},{1},{2}","Activity: ","Time: ","Session Time");
-        excelSW.WriteLine(line);
-        //EventWriter("Carrot");
-        // SW.WriteLine("Carrot");
-        // SW.WriteLine("Purple");
-        //Implement Stream Writer
+        var line = String.Format("{0},{1},{2}","Global Time: ","Reaction Time: ","Activity: ");
+        Debug.Log(pathExcel);
+        using (excelSW){
+            excelSW.WriteLine(line);
+        }
         Debug.Log(Application.persistentDataPath);
 
     }
@@ -110,8 +104,23 @@ public class TaskHandler : MonoBehaviour {
     }
     public static void EventWriter(string Activity,string timeDuration, string timeGlobal){
         //Excel
-            excelSW.WriteLine("{0},{1},{2}",Activity,timeDuration,timeGlobal);
-            //excelSW.Close();
+        string Holder = timeGlobal;
+        using (StreamWriter Writer = new StreamWriter(pathExcel, true)){
+            Holder += "," + timeDuration;
+            Holder += "," + Activity;
+            Writer.WriteLine(Holder);
+            Writer.Close();
+        }
+    }
+    public static int ArrayCheck(int Check){
+        while (true){
+            if (TaskArray[Check] <= 8){
+                return Check;
+            }
+            else if (TaskArray[Check] > 8){
+                Check = UnityEngine.Random.Range(0,11);
+            }
+        }
     }
 
     public static void TaskProcessor(int PlaneNumber){
@@ -120,12 +129,14 @@ public class TaskHandler : MonoBehaviour {
         //Main
         int RandomSelection = UnityEngine.Random.Range(0,12);
         //Filtering
-
+        RandomSelection = ArrayCheck(RandomSelection);
+        //RandomSelection = 3;
         //Event Handler
         TaskArray[RandomSelection]++;
         PlayerController.TaskList.Add(taskNames[RandomSelection]);
         EventWriter(taskNames[RandomSelection],Timer.TimerClock.ToString(),Timer.GlobalClock.ToString());
         //Visual Car Distraction
+
         if (RandomSelection == 0){
             Debug.Log("Visual");
             //Respawn.RandomAllocation(1, PlanePosition);
@@ -154,6 +165,8 @@ public class TaskHandler : MonoBehaviour {
             RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(RespawningHierarchy.CarMovement),PlaneNumber);
             RespawningHierarchy.RespawningCarDeviation = 1;
             RespawningHierarchy.CarMovementPlaneReference = PlaneNumber;
+            Debug.Log("Plane Number:" + PlaneNumber);
+            EventWriter("LANE" + PlaneNumber,0.ToString(),0.ToString());
         }
         //Lane Deviation -> Auditory
         else if (RandomSelection == 4){

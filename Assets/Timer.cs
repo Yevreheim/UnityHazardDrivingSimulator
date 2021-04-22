@@ -20,15 +20,18 @@ public class Timer : MonoBehaviour
     private static Timer Instance;
     public static float TimerClock;
     public static float GlobalClock;
+    public static float clockResponse;
     public GameObject GlobalClockMonitor;
     private string LaneChanged;
 
     // Start is called before the first frame update
     void Start()
     {
+
         speedGo = 0;
         TimerClock = 0.0f;
         GlobalClock = 0.0f;
+        clockResponse = 0.0f;
         //Assignment
         GlobalClockMonitor = GameObject.FindWithTag("GlobalClock");
         PlayerObject = GameObject.FindWithTag("Player");

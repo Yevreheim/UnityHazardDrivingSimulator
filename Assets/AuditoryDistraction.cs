@@ -13,12 +13,14 @@ public class AuditoryDistraction : MonoBehaviour
     public static int Signal;
     private static int FlipFlop;
     private static int RandomAnimal;
+    public static float clockResponse;
 
     void Start()
     {
         Signal = 0;
         FlipFlop = 0;
         RandomAnimal = 0;
+        clockResponse = 0.0f;
 
         ADTextObjects = GameObject.FindGameObjectsWithTag("AudioDist");
         foreach (GameObject G in ADTextObjects){
@@ -35,10 +37,12 @@ public class AuditoryDistraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        clockResponse = Time.deltaTime;
         //Spawning
         if (Signal == 1){
             if (FlipFlop == 0){
                 RandomAnimal = UnityEngine.Random.Range(0,4);
+                clockResponse = 0.0f;
                 // PlayerController.TaskList.Add("Visual Distraction - Sound");
                 FlipFlop = 1;
             }
@@ -55,21 +59,25 @@ public class AuditoryDistraction : MonoBehaviour
         //Response
         if (Input.GetKey(KeyCode.JoystickButton0) && ADTextObjects[0].activeSelf == true){
             Debug.Log("A Pressed");
+            TaskHandler.EventWriter("Button Response to Auditory Response",clockResponse.ToString(),Timer.GlobalClock.ToString());
             ADTextObjects[0].SetActive(false);
             Thread.Sleep(100);
         }
         if (Input.GetKey(KeyCode.JoystickButton1) && ADTextObjects[1].activeSelf == true){
             Debug.Log("B Pressed");
+            TaskHandler.EventWriter("Button Response to Auditory Response",clockResponse.ToString(),Timer.GlobalClock.ToString());
             ADTextObjects[1].SetActive(false);
             Thread.Sleep(100);
         }
         if (Input.GetKey(KeyCode.JoystickButton2) && ADTextObjects[2].activeSelf == true){
             Debug.Log("X Pressed");
+            TaskHandler.EventWriter("Button Response to Auditory Response",clockResponse.ToString(),Timer.GlobalClock.ToString());
             ADTextObjects[2].SetActive(false);
             Thread.Sleep(100);
         }
         if (Input.GetKey(KeyCode.JoystickButton3) && ADTextObjects[3].activeSelf == true){
             Debug.Log("Y Pressed");
+            TaskHandler.EventWriter("Button Response to Auditory Response",clockResponse.ToString(),Timer.GlobalClock.ToString());
             ADTextObjects[3].SetActive(false);
             Thread.Sleep(100);
         }

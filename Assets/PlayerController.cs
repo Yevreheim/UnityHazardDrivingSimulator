@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.Delete)){
             TaskHandler.EventWriter("Button",Timer.TimerClock.ToString(),Timer.GlobalClock.ToString());
         }
+
     }
 
     public void ListDisplayUpdate(){

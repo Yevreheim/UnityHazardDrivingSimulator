@@ -12,16 +12,37 @@ public class RespawningHierarchy : MonoBehaviour
     //Variable Declaration
     public static GameObject CameraObject;
     public static GameObject[] PlaneArray;
+    private static GameObject[] HolderArray;
     public static GameObject[] CarArrayListing;
+    public static GameObject[] Capsule;
     public static int RespawningCarDeviation;
     public static int CarMovement;
     public static int CarMovementPlaneReference;
+    public static int buttonVisualDisplay;
+    private int valueStorage;
 
 
     void Start(){
         //Assignment
         CameraObject = GameObject.FindWithTag("MainCamera");
         PlaneArray = GameObject.FindGameObjectsWithTag("Respawn");
+        Capsule = GameObject.FindGameObjectsWithTag("VisualDistraction");
+        foreach (GameObject Z in Capsule){
+            Z.SetActive(false);
+        }
+        //This is just a fix
+        HolderArray = new GameObject[5];
+        HolderArray[0] = PlaneArray[3];
+        HolderArray[1] = PlaneArray[2];
+        HolderArray[2] = PlaneArray[1];
+        HolderArray[3] = PlaneArray[0];
+        HolderArray[4] = PlaneArray[4];
+        PlaneArray = HolderArray;
+        foreach(GameObject G in PlaneArray){
+            //Reordering CAUSE WHY, 43215
+            Debug.Log(G.name);
+        }
+
         CarArrayListing = GameObject.FindGameObjectsWithTag("Car");
         RespawningCarDeviation = 0;
         CarMovement = 1;
@@ -40,12 +61,21 @@ public class RespawningHierarchy : MonoBehaviour
         for (int G = 0; G < PlaneArray.Length; G ++){
             //Activated when the Car travels halfway verticaly across a plane
             if (CameraObject.transform.position.z > PlaneArray[G].transform.position.z + 6){
-                PlaneArray[G].transform.position = new Vector3(PlaneArray[G].transform.position.x,0,(PlaneArray[G].transform.position.z + 40));
-                //Sus on this 
+                //Respawns path
+                PlaneArray[G].transform.position = new Vector3(PlaneArray[G].transform.position.x,0,(PlaneArray[G].transform.position.z + 50));
                 CarActivator(G,false);
                 //Control 
                 if (LaneTimer > 8){
+                    Debug.Log("G:" + G);
+                    valueStorage = G;
                     RespawnInitiator(G);
+                }
+                else {
+                    for (int i = 0; i < CarArrayListing.Length;i++){
+                        if (i < valueStorage*4 || i > valueStorage*4 + 3){
+                            CarArrayListing[i].SetActive(false);
+                        }
+                    }
                 }
             }
         }
@@ -64,10 +94,21 @@ public class RespawningHierarchy : MonoBehaviour
                         //Moving Left
                         CarArrayListing[i].transform.Translate(new Vector3(0,0,2*Time.deltaTime));
                     }
+                
                 }
+                
+            }
+            
+        }
+
+        //Button Response for Visual Display
+        if (buttonVisualDisplay == 1){
+            if (Input.GetKey(KeyCode.Keypad1) || Input.GetKey(KeyCode.Keypad0)){
+                buttonVisualDisplay = 0;
+                TaskHandler.EventWriter("Button Response to Visual",LaneTimer.ToString(),Timer.GlobalClock.ToString());
+                Debug.Log("Button Response Accepted");
             }
         }
-        
 
 
         //Debug
@@ -127,7 +168,10 @@ public class RespawningHierarchy : MonoBehaviour
             //Ensures that only 2 objects can be spawned at a time
             // ! checks for True/False, 1 = exists, 2 = not exists.
             if (Check == 1){
-                if (count != 2 || PathRandom[1] != 1) {
+                //Display Button Response
+                buttonVisualDisplay = 1;
+                //Filter
+                if (count != 1 || PathRandom[3] != 1) {
                 count = 0;
                 // Rand = new System.Random();
                     for (int j = 0; j < PathRandom.Length; j++){

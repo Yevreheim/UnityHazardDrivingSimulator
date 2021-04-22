@@ -8,6 +8,7 @@ ScriptsOnlyBuild:
     - RespawningHierarchy
     - SecondaryCameraFollow
     - TaskDeviation
+    - TaskHandler
     - Timer
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
@@ -73,6 +74,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 11290}
     - Class: 114
       Script: {instanceID: 11496}
+    - Class: 114
+      Script: {instanceID: 11690}
     - Class: 114
       Script: {instanceID: 11824}
     - Class: 114
