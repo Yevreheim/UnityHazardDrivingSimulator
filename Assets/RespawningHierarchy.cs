@@ -111,6 +111,9 @@ public class RespawningHierarchy : MonoBehaviour
                 //Respawns path
                 PlaneArray[G].transform.position = new Vector3(PlaneArray[G].transform.position.x,0,(PlaneArray[G].transform.position.z + 50));
                 CarActivator(G,false);
+                // foreach (GameObject C in Capsule){
+                //     C.SetActive(false);
+                // }
                 //Control 
                 if (LaneTimer > 8){
                     Debug.Log("G:" + G);
@@ -181,6 +184,7 @@ public class RespawningHierarchy : MonoBehaviour
     }
     public static void SelectiveCarActivator(int[] Array, int PlaneNumber){
         int Count = 0;
+        //Capsule[PlaneNumber].SetActive(true);
         for(int i = PlaneNumber*4;i< PlaneNumber*4 + 4;i++,Count++){
             if (Array[Count] == 1){
                 CarArrayListing[i].SetActive(true);

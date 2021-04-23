@@ -128,6 +128,7 @@ public class TaskHandler : MonoBehaviour {
         RespawningHierarchy.RespawningCarDeviation = 0;
         //Main
         int RandomSelection = UnityEngine.Random.Range(0,12);
+        
         //Filtering
         RandomSelection = ArrayCheck(RandomSelection);
         //Event Handler
