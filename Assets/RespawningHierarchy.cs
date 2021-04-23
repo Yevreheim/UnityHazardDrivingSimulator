@@ -14,10 +14,12 @@ public class RespawningHierarchy : MonoBehaviour
     public static GameObject[] PlaneArray;
     private static GameObject[] HolderArray;
     public static GameObject[] CarArrayListing;
+    private static GameObject[] holderCarArray;
     public static GameObject[] Capsule;
     public static int RespawningCarDeviation;
     public static int CarMovement;
     public static int CarMovementPlaneReference;
+    public static int GlobalPlaneReference;
     public static int buttonVisualDisplay;
     private int valueStorage;
 
@@ -47,10 +49,55 @@ public class RespawningHierarchy : MonoBehaviour
         RespawningCarDeviation = 0;
         CarMovement = 1;
 
+
+        //MORE DEBUG AND CAR FIXING
+        holderCarArray = new GameObject[20];
+        for (int i = 0; i < CarArrayListing.Length; i++){
+            //Plane 4(1) old to Plane 4 new
+            if (i == 0 || i == 1 || i == 2 || i ==3 ){
+
+                holderCarArray[12 + i] = CarArrayListing[i];
+            }
+            //Plane 3(2) old to Plane 3 new
+            else if (i == 4 || i == 5 || i == 6 || i == 7 ){
+                holderCarArray[4 + i] = CarArrayListing[i];
+            }
+            //Plane 2(3) old to Plane 2 new
+            else if (i == 8 || i == 9 || i == 10 || i == 11 ){
+                holderCarArray[i-4] = CarArrayListing[i];
+            }
+            //Plane 1(4) to Plane 1 new
+            else if (i == 12 || i == 13 || i == 14 || i == 15){
+                //holderCarArray[12-i] = CarArrayListing[i];
+                if (i == 12){
+                    holderCarArray[0] = CarArrayListing[i];
+                }
+                else if (i == 13){
+                    holderCarArray[1] = CarArrayListing[i];
+                }
+                else if (i == 14){
+                    holderCarArray[2] = CarArrayListing[i];
+                }
+                else if (i == 15){
+                    holderCarArray[3] = CarArrayListing[i];
+                }
+            }
+            //Plane 5 to Plane 5
+            else if (i > 15){
+                holderCarArray[i] = CarArrayListing[i];
+            }
+        }
+        CarArrayListing = holderCarArray;
         //CarDisappearance
         foreach (GameObject G in CarArrayListing){
             G.SetActive(false);
         }
+        // for(int j = 0; j < CarArrayListing.Length;j++){
+        //     if (j == 0 || j == 3){
+        //         CarArrayListing[j].SetActive(false);
+        //     }
+        // }
+        
 
     }
     
@@ -86,11 +133,11 @@ public class RespawningHierarchy : MonoBehaviour
             for (int i = CarMovementPlaneReference*4;i < CarMovementPlaneReference*4 + 4; i++,LaneCount++){
                 //Checks if Car Exists
                 if (CarArrayListing[i].activeSelf == true){
-                    if (CarMovement == 0 && LaneCount == 1){
+                    if (CarMovement == 0 && LaneCount == 1 && CarArrayListing[i].transform.position.x < 6){
                         //Moving Right
                         CarArrayListing[i].transform.Translate(new Vector3(0,0,-2*Time.deltaTime));
                     }
-                    else if (CarMovement == 2 && LaneCount == 3){
+                    else if (CarMovement == 2 && LaneCount == 3&& CarArrayListing[i].transform.position.x > 6){
                         //Moving Left
                         CarArrayListing[i].transform.Translate(new Vector3(0,0,2*Time.deltaTime));
                     }

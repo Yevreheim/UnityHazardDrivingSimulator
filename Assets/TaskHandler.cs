@@ -130,7 +130,6 @@ public class TaskHandler : MonoBehaviour {
         int RandomSelection = UnityEngine.Random.Range(0,12);
         //Filtering
         RandomSelection = ArrayCheck(RandomSelection);
-        //RandomSelection = 3;
         //Event Handler
         TaskArray[RandomSelection]++;
         PlayerController.TaskList.Add(taskNames[RandomSelection]);
@@ -165,6 +164,7 @@ public class TaskHandler : MonoBehaviour {
             RespawningHierarchy.SelectiveCarActivator(RespawningHierarchy.RandomAllocation(RespawningHierarchy.CarMovement),PlaneNumber);
             RespawningHierarchy.RespawningCarDeviation = 1;
             RespawningHierarchy.CarMovementPlaneReference = PlaneNumber;
+            RespawningHierarchy.GlobalPlaneReference = PlaneNumber;
             Debug.Log("Plane Number:" + PlaneNumber);
             EventWriter("LANE" + PlaneNumber,0.ToString(),0.ToString());
         }
