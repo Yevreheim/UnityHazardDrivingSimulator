@@ -135,8 +135,8 @@ public class TaskHandler : MonoBehaviour {
         TaskArray[RandomSelection]++;
         PlayerController.TaskList.Add(taskNames[RandomSelection]);
         EventWriter(taskNames[RandomSelection],Timer.TimerClock.ToString(),Timer.GlobalClock.ToString());
+        
         //Visual Car Distraction
-
         if (RandomSelection == 0){
             Debug.Log("Visual");
             //Respawn.RandomAllocation(1, PlanePosition);

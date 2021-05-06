@@ -8,12 +8,15 @@ public class CameraMovement : MonoBehaviour
 {
     //Variables
     private int speedGo;
-    private float speedEnhancer = 3;
+    public static float speedEnhancer;
+    private int caseGate;
 
     // Start is called before the first frame update
     void Start()
     {
+        speedEnhancer = 3;
         speedGo = 0;
+        caseGate = 0;
     }
     
     // Update is called once per frame
@@ -46,10 +49,20 @@ public class CameraMovement : MonoBehaviour
 
         if ((Input.GetKey(KeyCode.UpArrow)) || (Input.GetKey(KeyCode.W))|| Input.GetAxis("Vertical")>0)
         {
-            if (speedEnhancer <= 30){
+            if (speedEnhancer <= 20){
                 speedEnhancer = speedEnhancer + 0.1f;
+                if (speedEnhancer > 0.5f){
+                    caseGate = 1;
+                }
             }
         }
+        if (speedEnhancer == 0){
+            if (caseGate == 1){
+                TaskHandler.EventWriter("Full Stop Break",Timer.TimerClock.ToString(),Timer.GlobalClock.ToString());
+                caseGate = 0;
+            }
+        }
+
         if ((Input.GetKey(KeyCode.Space)))
         {
             switch (speedGo)

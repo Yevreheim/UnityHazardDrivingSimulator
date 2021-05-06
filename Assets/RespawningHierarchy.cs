@@ -16,6 +16,7 @@ public class RespawningHierarchy : MonoBehaviour
     public static GameObject[] CarArrayListing;
     private static GameObject[] holderCarArray;
     public static GameObject[] Capsule;
+    private static GameObject[] arrayCapsule;
     public static int RespawningCarDeviation;
     public static int CarMovement;
     public static int CarMovementPlaneReference;
@@ -40,6 +41,14 @@ public class RespawningHierarchy : MonoBehaviour
         HolderArray[3] = PlaneArray[0];
         HolderArray[4] = PlaneArray[4];
         PlaneArray = HolderArray;
+        //Capsules
+        arrayCapsule = new GameObject[5];
+        arrayCapsule[0] = Capsule[3];
+        arrayCapsule[1] = Capsule[2];
+        arrayCapsule[2] = Capsule[1];
+        arrayCapsule[3] = Capsule[0];
+        arrayCapsule[4] = Capsule[4];
+        Capsule = arrayCapsule;
         foreach(GameObject G in PlaneArray){
             //Reordering CAUSE WHY, 43215
             Debug.Log(G.name);
@@ -135,16 +144,31 @@ public class RespawningHierarchy : MonoBehaviour
             int LaneCount = 1;
             for (int i = CarMovementPlaneReference*4;i < CarMovementPlaneReference*4 + 4; i++,LaneCount++){
                 //Checks if Car Exists
-                if (CarArrayListing[i].activeSelf == true){
+                if (CarArrayListing[i].activeSelf == true && CameraMovement.speedEnhancer>0){
                     if (CarMovement == 0 && LaneCount == 1 && CarArrayListing[i].transform.position.x < 6){
                         //Moving Right
-                        CarArrayListing[i].transform.Translate(new Vector3(0,0,-2*Time.deltaTime));
+                        CarArrayListing[i].transform.Translate(new Vector3(0,0,-1.5f*Time.deltaTime));
                     }
                     else if (CarMovement == 2 && LaneCount == 3&& CarArrayListing[i].transform.position.x > 6){
                         //Moving Left
-                        CarArrayListing[i].transform.Translate(new Vector3(0,0,2*Time.deltaTime));
+                        CarArrayListing[i].transform.Translate(new Vector3(0,0,1.5f*Time.deltaTime));
                     }
                 
+                }
+                //2nd Deviation
+                else if (CarArrayListing[i].activeSelf == true && CameraMovement.speedEnhancer<=0){
+                    if (CarMovement == 0 && LaneCount == 1 && CarArrayListing[i].transform.position.x < 12){
+                        //Moving Right
+                        CarArrayListing[i].transform.Translate(new Vector3(0,0,-3f*Time.deltaTime));
+                    }
+                    else if (CarMovement == 2 && LaneCount == 3&& CarArrayListing[i].transform.position.x > 0){
+                        //Moving Left
+                        CarArrayListing[i].transform.Translate(new Vector3(0,0,3f*Time.deltaTime));
+                    }
+                    else{
+                        Timer.TimerClock = 0;
+                        RespawningCarDeviation = 0;
+                    }
                 }
                 
             }
@@ -181,6 +205,7 @@ public class RespawningHierarchy : MonoBehaviour
             Vector3 Position = new Vector3(GameObject.FindWithTag(Lane).transform.position.x,0,PlaneArray[PlaneNumber].transform.position.z);
             CarArrayListing[i].transform.position = Position;
         }
+        Capsule[PlaneNumber].SetActive(false);
     }
     public static void SelectiveCarActivator(int[] Array, int PlaneNumber){
         int Count = 0;
@@ -190,6 +215,7 @@ public class RespawningHierarchy : MonoBehaviour
                 CarArrayListing[i].SetActive(true);
             }
         }
+        Capsule[PlaneNumber].SetActive(true);
     }
     private void RespawnInitiator(int PlaneNumber){
         //Timer Reset
@@ -241,7 +267,7 @@ public class RespawningHierarchy : MonoBehaviour
             }
             //Car Deviations
             else if (Check == 0 || Check == 2){
-                if (count != 2 || PathRandom[1] != 0 || PathRandom[Check] != 1) {
+                if (count != 1 || PathRandom[1] != 0 || PathRandom[Check] != 1) {
                 count = 0;
                 // Rand = new System.Random();
                     for (int j = 0; j < PathRandom.Length; j++){
