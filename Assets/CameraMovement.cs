@@ -24,27 +24,31 @@ public class CameraMovement : MonoBehaviour
         
         if ((Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.D)))
         {
-            if (transform.position.x < 21.5){
+            if (transform.position.x <= 21.5){
                 transform.Translate(new Vector3(Input.GetAxis("Horizontal"),0,0));
                 transform.Translate(new Vector3(5 * Time.deltaTime, 0, 0));
             }
         }
         if ((Input.GetKey(KeyCode.LeftArrow)) || (Input.GetKey(KeyCode.A)))
         {
-            if (transform.position.x > -3.5){
+            if (transform.position.x >= -3.5){
                 transform.Translate(new Vector3(Input.GetAxis("Horizontal"),0,0));
                 transform.Translate(new Vector3(-5 * Time.deltaTime, 0, 0));
             }
         }
-        if ((Input.GetKey(KeyCode.DownArrow)) || (Input.GetKey(KeyCode.S)))
+        if ((Input.GetKey(KeyCode.DownArrow)) || (Input.GetKey(KeyCode.S)) || Input.GetAxis("Vertical")<0)
         {
-            if (speedEnhancer > 3){
+            if (speedEnhancer >= 0){
+                //transform.Translate(new Vector3(Input.GetAxis("Vertical"),0,0));
                 speedEnhancer = speedEnhancer - 0.1f;
             }
         }
-        if ((Input.GetKey(KeyCode.UpArrow)) || (Input.GetKey(KeyCode.W)))
+
+        if ((Input.GetKey(KeyCode.UpArrow)) || (Input.GetKey(KeyCode.W))|| Input.GetAxis("Vertical")>0)
         {
-            speedEnhancer = speedEnhancer + 0.1f;
+            if (speedEnhancer <= 30){
+                speedEnhancer = speedEnhancer + 0.1f;
+            }
         }
         if ((Input.GetKey(KeyCode.Space)))
         {
